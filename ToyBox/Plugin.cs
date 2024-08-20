@@ -11,14 +11,14 @@ public class ToyBox : IDalamudPlugin
 {
     public string Name => "ToyBox";
 
-    private static IDalamudPluginInterface PluginInterface { get; set; }
+    private static IDalamudPluginInterface? PluginInterface { get; set; }
 
     public Configuration Configuration { get; init; }
     public WindowSystem WindowSystem = new("ToyBox");
 
-    public Api? api { get; set; }
+    public Api? Api { get; set; }
 
-    private Commands commands { get; set; }
+    private Commands Commands { get; set; }
 
     private ConfigWindow ConfigWindow { get; init; }
     private BtBFormation BtBFormation { get; init; }
@@ -30,13 +30,13 @@ public class ToyBox : IDalamudPlugin
     private ulong ContentId { get; set; }
     private string PlayerName { get; set; } = "";
 
-    public ToyBox(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager commandManager, IClientState clientState, IPartyList partyList)
+    public ToyBox(IDalamudPluginInterface? pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager? commandManager, IClientState clientState, IPartyList partyList)
     {
-        api = pluginInterface.Create<Api>();
+        Api = pluginInterface?.Create<Api>();
 
         PluginInterface = pluginInterface;
 
-        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Configuration = PluginInterface?.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(PluginInterface);
 
         //Init the IPC - Receiver
@@ -45,8 +45,11 @@ public class ToyBox : IDalamudPlugin
         BackgroundRunner.Instance.Initialize(this);
         CamHack.Instance.Initialize();
 
-        Api.ClientState.Login  += OnLogin;
-        Api.ClientState.Logout += OnLogout;
+        if (Api.ClientState != null)
+        {
+            Api.ClientState.Login  += OnLogin;
+            Api.ClientState.Logout += OnLogout;
+        }
 
         //Build and register the Windows
         ConfigWindow    = new ConfigWindow(this);
@@ -59,11 +62,14 @@ public class ToyBox : IDalamudPlugin
         WindowSystem.AddWindow(FormationEditor);
         WindowSystem.AddWindow(MainWindow);
 
-        commands = new Commands(this, commandManager);
+        Commands = new Commands(this, commandManager);
 
-        PluginInterface.UiBuilder.Draw         += DrawUI;
-        PluginInterface.UiBuilder.OpenConfigUi += UiBuilder_OpenConfigUi;
-        PluginInterface.UiBuilder.OpenMainUi   += UiBuilder_OpenMainUi;
+        if (PluginInterface != null)
+        {
+            PluginInterface.UiBuilder.Draw         += DrawUI;
+            PluginInterface.UiBuilder.OpenConfigUi += UiBuilder_OpenConfigUi;
+            PluginInterface.UiBuilder.OpenMainUi   += UiBuilder_OpenMainUi;
+        }
 
         MainWindow.IsOpen = Configuration.MainWindowVisible;
         OnLogin();
@@ -82,8 +88,11 @@ public class ToyBox : IDalamudPlugin
     public void Dispose()
     {
         BackgroundRunner.Instance.Dispose();
-        Api.ClientState.Login  -= OnLogin;
-        Api.ClientState.Logout -= OnLogout;
+        if (Api.ClientState != null)
+        {
+            Api.ClientState.Login  -= OnLogin;
+            Api.ClientState.Logout -= OnLogout;
+        }
 
         OnLogout();
 
@@ -96,15 +105,14 @@ public class ToyBox : IDalamudPlugin
         ConfigWindow.Dispose();
         MainWindow.Dispose();
 
-        if (Configuration != null)
-            Configuration.Save();
+        Configuration.Save();
 
-        commands.Dispose();
+        Commands.Dispose();
     }
 
     private void OnLogin()
     {
-        if (Api.ClientState.LocalPlayer == null)
+        if (Api.ClientState?.LocalPlayer == null)
             return;
         if (!Api.ClientState.LocalPlayer.IsValid())
             return;
@@ -121,7 +129,7 @@ public class ToyBox : IDalamudPlugin
 
     private void OnLogout()
     {
-        if (Api.ClientState.LocalPlayer == null)
+        if (Api.ClientState?.LocalPlayer == null)
         {
             if (ContentId == 0)
                 return;

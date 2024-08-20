@@ -6,7 +6,7 @@ public static class GameConfig
 {
     public static void SetLowExceptMe()
     {
-        if (Api.ClientState.LocalPlayer == null)
+        if (Api.ClientState?.LocalPlayer == null)
             return;
 
         Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.SetGfx, [true.ToString()]);
@@ -14,7 +14,7 @@ public static class GameConfig
 
     public static void Reset()
     {
-        if (Api.ClientState.LocalPlayer == null)
+        if (Api.ClientState?.LocalPlayer == null)
             return;
 
         Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.SetGfx, [false.ToString()]);
@@ -22,7 +22,7 @@ public static class GameConfig
 
     public static void Logout(ulong cid)
     {
-        if (Api.ClientState.LocalPlayer == null)
+        if (Api.ClientState?.LocalPlayer == null)
             return;
 
         if (Api.ClientState.LocalContentId == cid)
@@ -35,7 +35,7 @@ public static class GameConfig
 
     public static void Shutdown(ulong cid)
     {
-        if (Api.ClientState.LocalPlayer == null)
+        if (Api.ClientState?.LocalPlayer == null)
             return;
 
         if (Api.ClientState.LocalContentId == cid)

@@ -12,7 +12,7 @@ namespace ToyBox.Windows;
 public class MainWindow : Window, IDisposable
 {
     private ToyBox plugin;
-    private FormationsData selected_formation;
+    private FormationsData? selected_formation;
 
     public MainWindow(ToyBox plugin) : base(
         "ToyBox", ImGuiWindowFlags.AlwaysUseWindowPadding)
@@ -56,7 +56,8 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine();
             if (ImGui.Button("Disable"))
             {
-                Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.CamHack, [false.ToString()]);
+                if (Api.ClientState != null)
+                    Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.CamHack, [false.ToString()]);
                 CamHack.Instance.Disable();
             }
         }
@@ -133,10 +134,10 @@ public class MainWindow : Window, IDisposable
             if (ImGui.BeginCombo("##combo", selected_formation != null? selected_formation.Name : ""))
             {
                 var comboData = plugin.Configuration.FormationsList;
-                for (int n = 0; n < plugin.Configuration.FormationsList.Count; n++)
+                for (var n = 0; n < plugin.Configuration.FormationsList.Count; n++)
                 {
-                    bool is_selected = selected_formation == comboData[n];
-                    if (ImGui.Selectable(comboData[n].Name, is_selected))
+                    var is_selected = selected_formation == comboData[n];
+                    if (ImGui.Selectable(comboData[n]?.Name, is_selected))
                         selected_formation = comboData[n];
                     if (is_selected)
                         ImGui.SetItemDefaultFocus();
@@ -163,18 +164,18 @@ public class MainWindow : Window, IDisposable
         ImGui.Separator();
         if (ImGui.CollapsingHeader("Connected Chars"))
         {
-            foreach (LocalPlayer p in LocalPlayerCollector.localPlayers)
+            foreach (var p in LocalPlayerCollector.localPlayers)
             {
                 ImGui.Text(p.Name + " " + p.GetWorldName());
                 {
                     ImGui.BeginChild(p.LocalContentId.ToString(), new Vector2(0, 90), true, ImGuiWindowFlags.NoScrollbar);
-                    float width = ImGui.GetWindowWidth() * 70 / 100;
+                    var width = ImGui.GetWindowWidth() * 70 / 100;
                     ImGui.Columns(2);
                     ImGui.SetColumnWidth(0, ImGui.GetWindowWidth() - width);
                     ImGui.SetColumnWidth(1, width);
 
                     ImGui.PushID("##ID" + p.LocalContentId);
-                    bool bce = p.BroadCastEnabled;
+                    var bce = p.BroadCastEnabled;
                     if (ImGui.Checkbox("BC Enabled", ref bce))
                     {
                         p.BroadCastEnabled = bce;
@@ -201,15 +202,13 @@ public class MainWindow : Window, IDisposable
 
     public void DrawProcFrame(LocalPlayer player)
     {
-        int AffinityMask = player.Affinity;
+        var AffinityMask = player.Affinity;
         ImGui.BeginChildFrame(2, new ImVec2(0, 0), ImGuiWindowFlags.HorizontalScrollbar);
-        for (int i = 0; i < ProcAffinity.GetCPUCores(); i++)
+        for (var i = 0; i < ProcAffinity.GetCPUCores(); i++)
         {
             ImGui.PushID("##CPU" + i);
 
-            bool flag = false;
-            if ((AffinityMask & (1 << i)) > 0)
-                flag = true;
+            var flag = (AffinityMask & (1 << i)) > 0;
 
             ImGui.Checkbox((i+1).ToString("D2"), ref flag);
             if ( i != ProcAffinity.GetCPUCores()/2)
@@ -222,7 +221,7 @@ public class MainWindow : Window, IDisposable
 
             if (AffinityMask != player.Affinity)
                 player.Affinity = AffinityMask;
-                //ProcAffinity.SetAffinity(AffinityMask);
+            //ProcAffinity.SetAffinity(AffinityMask);
             ImGui.PopID();
         }
         ImGui.EndChildFrame();

@@ -10,15 +10,15 @@ public class BackgroundRunner : IDisposable
 
     private CancellationTokenSource cancelToken = new();
 
-    private static ToyBox plugin { get; set; }
+    private static ToyBox? plugin { get; set; }
 
     private BackgroundRunner(){}
 
-    public void Initialize(ToyBox pluginmain)
+    public void Initialize(ToyBox? pluginmain)
     {
         plugin = pluginmain;
 
-        Api.Framework.RunOnTick(delegate
+        Api.Framework?.RunOnTick(delegate
         {
             cancelToken = new CancellationTokenSource();
             Task.Factory.StartNew(() => SlowRunner(cancelToken.Token), TaskCreationOptions.LongRunning);

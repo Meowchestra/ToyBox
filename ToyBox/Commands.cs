@@ -9,22 +9,22 @@ public class Commands : IDisposable
 {
     private const string CommandName = "/ht";
     private const string CommandBrName = "/hbr";
-    private static ICommandManager CommandManager { get; set; }
-    private static ToyBox plugin { get; set; }
+    private static ICommandManager? CommandManager { get; set; }
+    private static ToyBox? plugin { get; set; }
 
-    public Commands(ToyBox pluginmain, ICommandManager manager)
+    public Commands(ToyBox? pluginmain, ICommandManager? manager)
     {
         plugin         = pluginmain;
         CommandManager = manager;
-        CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
+        CommandManager?.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
             HelpMessage = "A useful message to display in /xlhelp"
         });
-        CommandManager.AddHandler(CommandBrName, new CommandInfo(OnCommandBr)
+        CommandManager?.AddHandler(CommandBrName, new CommandInfo(OnCommandBr)
         {
             HelpMessage = "Broadcast your message to all."
         });
-        CommandManager.AddHandler("/hbrn", new CommandInfo(OnCommandBr)
+        CommandManager?.AddHandler("/hbrn", new CommandInfo(OnCommandBr)
         {
             HelpMessage = "Broadcast your message to all except yourself."
         });
@@ -32,8 +32,8 @@ public class Commands : IDisposable
 
     public void Dispose()
     {
-        CommandManager.RemoveHandler(CommandBrName);
-        CommandManager.RemoveHandler(CommandName);
+        CommandManager?.RemoveHandler(CommandBrName);
+        CommandManager?.RemoveHandler(CommandName);
     }
 
     private void OnCommandBr(string command, string args)
@@ -41,7 +41,7 @@ public class Commands : IDisposable
         if (args.Length <= 0)
             return;
 
-        if (Api.ClientState.LocalPlayer == null)
+        if (Api.ClientState?.LocalPlayer == null)
             return;
 
         if (command.Equals(CommandBrName))
@@ -53,11 +53,11 @@ public class Commands : IDisposable
     private void OnCommand(string command, string args)
     {
         var regex = Regex.Match(args, "^(\\w+) ?(.*)");
-        var subcommand = regex.Success && regex.Groups.Count > 1 ? regex.Groups[1].Value : string.Empty;
+        var subcommand = regex is { Success: true, Groups.Count: > 1 } ? regex.Groups[1].Value : string.Empty;
 
         if (subcommand == "")
         {
-            plugin.ToggleDrawMainUI();
+            plugin?.ToggleDrawMainUI();
             return;
         }
 

@@ -6,9 +6,12 @@ public static class MiscFunctions
 {
     public static void EnableBCForClient(LocalPlayer player)
     {
-        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCEnabled, [
-            player.LocalContentId.ToString(),
-            player.BroadCastEnabled.ToString()
-        ]);
+        if (Api.ClientState != null)
+        {
+            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCEnabled, [
+                player.LocalContentId.ToString(),
+                player.BroadCastEnabled.ToString()
+            ]);
+        }
     }
 }

@@ -9,18 +9,18 @@ public enum MessageType
 
     FormationData       = 4,
     FormationStop       = 5,
-    ClientLogout        = 6,
-    GameShutdown        = 7,
 
-    SetGfx              = 10,    //Set <bool> true=low false=normal
+    PartyInviteAccept   = 41,
+    PartyPromote        = 42,
+    PartyEnterHouse     = 43,
+    PartyTeleport       = 44,
+    PartyFollow         = 45,
+    PartyLeave          = 46,
 
-    Chat                = 40,
+    SetGfx              = 50,    //Set <bool> true=low false=normal
 
-    PartyInviteAccept   = 61,
-    PartyPromote        = 62,
-    PartyEnterHouse     = 63,
-    PartyTeleport       = 64,
-    PartyFollow         = 65,
-    PartyLeave          = 66,
-    CamHack             = 70
+    CamHack             = 70,
+    Chat                = 85,
+    ClientLogout        = 98,
+    GameShutdown        = 99
 }

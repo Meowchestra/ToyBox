@@ -11,7 +11,7 @@ public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
 
-    public List<FormationsData> FormationsList { get; set; } = [];
+    public List<FormationsData?> FormationsList { get; set; } = [];
 
     public Dictionary<long, KeyValuePair<string, string>> ContentIDLookup { get; set; } = new();
 
@@ -22,9 +22,9 @@ public class Configuration : IPluginConfiguration
 
     // the below exist just to make saving less cumbersome
     [NonSerialized]
-    private IDalamudPluginInterface pluginInterface;
+    private IDalamudPluginInterface? pluginInterface;
 
-    public void Initialize(IDalamudPluginInterface pluginInterface)
+    public void Initialize(IDalamudPluginInterface? pluginInterface)
     {
         this.pluginInterface = pluginInterface;
 

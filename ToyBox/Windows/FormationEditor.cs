@@ -23,12 +23,12 @@ public class FormationEditor : Window, IDisposable
 
     public void Dispose() { }
 
-    string selected_formation = "";
-    FormationsData formation;
+    string? selected_formation = "";
+    FormationsData? formation;
 
     public override void Draw()
     {
-        float width = ImGui.GetWindowWidth() * 40 / 100;
+        var width = ImGui.GetWindowWidth() * 40 / 100;
         ImGui.Columns(2);
         ImGui.SetColumnWidth(0, ImGui.GetWindowWidth() - width);
         ImGui.SetColumnWidth(1, width);
@@ -37,7 +37,7 @@ public class FormationEditor : Window, IDisposable
         {
             foreach (var formations in configuration.FormationsList)
             {
-                bool isSelected = false;
+                var isSelected = false;
                 if (ImGui.Selectable(formations.Name, isSelected))
                 {
                     selected_formation = formations.Name;
@@ -57,7 +57,7 @@ public class FormationEditor : Window, IDisposable
         if (ImGui.Button("New"))
         {
             var formations = FormationFactory.CreateNewFormation();
-            selected_formation = formations.Name;
+            selected_formation = formations?.Name;
             formation          = formations;
         }
         ImGui.SameLine();
@@ -71,8 +71,8 @@ public class FormationEditor : Window, IDisposable
         {
             if (formation != null)
             {
-                int idx = -1;
-                for (int i = 0; i != configuration.FormationsList.Count; i++)
+                var idx = -1;
+                for (var i = 0; i != configuration.FormationsList.Count; i++)
                 {
                     if (configuration.FormationsList[i].Name.Equals(selected_formation))
                     {
@@ -80,7 +80,7 @@ public class FormationEditor : Window, IDisposable
                         break;
                     }
                 }
-                Api.PluginLog.Debug(idx.ToString());
+                Api.PluginLog?.Debug(idx.ToString());
                 if (idx != -1)
                 {
                     configuration.FormationsList.RemoveAt(idx);
@@ -125,7 +125,7 @@ public class FormationEditor : Window, IDisposable
 
     static bool SliderFloatDefault(string label, ref float v, float v_min, float v_max, float v_default)
     {
-        bool ret = ImGui.SliderFloat(label, ref v, v_min, v_max);
+        var ret = ImGui.SliderFloat(label, ref v, v_min, v_max);
         if (ImGui.BeginPopupContextItem(label))
         {
             if (ImGui.MenuItem("Reset to: " + v_default))
@@ -151,13 +151,13 @@ public class FormationEditor : Window, IDisposable
             new(0.0f, -1.0f),
             new(-1f, -1f)
         ];
-        Matrix3x2 rotationMatrix = Matrix3x2.CreateRotation(inputRotation);
-        for (int index = 0; index < triangle.Length; index++)
+        var rotationMatrix = Matrix3x2.CreateRotation(inputRotation);
+        for (var index = 0; index < triangle.Length; index++)
         {
-            Vector2 absPos = Vector2.Transform(triangle[index] / 2f, rotationMatrix) + position;
+            var absPos = Vector2.Transform(triangle[index] / 2f, rotationMatrix) + position;
             triangle[index] = ImPlot.PlotToPixels(absPos.X, absPos.Y);
         }
-        ImDrawListPtr plotDrawList = ImPlot.GetPlotDrawList();
+        var plotDrawList = ImPlot.GetPlotDrawList();
         plotDrawList.AddPolyline(ref triangle[0], triangle.Length, color, ImDrawFlags.Closed, 0.8f);
     }
 
@@ -170,25 +170,25 @@ public class FormationEditor : Window, IDisposable
         if (formation.Count == 0)
             return;
 
-        uint colorOnline = ImGui.GetColorU32(ImGuiColors.DalamudViolet);
-        uint colorOffline = ImGui.GetColorU32(ImGuiColors.DalamudRed);
+        var colorOnline = ImGui.GetColorU32(ImGuiColors.DalamudViolet);
+        var colorOffline = ImGui.GetColorU32(ImGuiColors.DalamudRed);
 
         //get max axis scale
-        float limit = formation.Values.Max(n => Math.Abs(n.RelativePosition.X) >= Math.Abs(n.RelativePosition.Z) ? Math.Abs(n.RelativePosition.X) : Math.Abs(n.RelativePosition.Z)) + 1f;
+        var limit = formation.Values.Max(n => Math.Abs(n.RelativePosition.X) >= Math.Abs(n.RelativePosition.Z) ? Math.Abs(n.RelativePosition.X) : Math.Abs(n.RelativePosition.Z)) + 1f;
         ImPlot.SetNextAxisLimits(ImAxis.X1, -limit, limit, ImPlotCond.Always);
         ImPlot.SetNextAxisLimits(ImAxis.Y1, -limit, limit, ImPlotCond.Always);
         if (ImPlot.BeginPlot("Formation", new Vector2(-1f), ImPlotFlags.NoTitle | ImPlotFlags.NoLegend | ImPlotFlags.NoMouseText | ImPlotFlags.NoMenus | ImPlotFlags.NoBoxSelect | ImPlotFlags.NoChild | ImPlotFlags.Equal))
         {
             ImPlot.PushPlotClipRect();
-            int pointId = 0;
-            foreach (FormationEntry formationEntry in formation.Values)
+            var pointId = 0;
+            foreach (var formationEntry in formation.Values)
             {
                 //The 2D position (Z is reverse)
-                Vector2 posVector2D = new Vector2(formationEntry.RelativePosition.X, -formationEntry.RelativePosition.Z);
+                var posVector2D = new Vector2(formationEntry.RelativePosition.X, -formationEntry.RelativePosition.Z);
                 double x = posVector2D.X;
                 double y = posVector2D.Y;
                 //set color for on/offline
-                uint color = LocalPlayerCollector.localPlayers.Exists(n=> n.LocalContentId == (ulong)formationEntry.CID) ? colorOnline : colorOffline;
+                var color = LocalPlayerCollector.localPlayers.Exists(n=> n.LocalContentId == (ulong)formationEntry.CID) ? colorOnline : colorOffline;
                 //Draw triangle
                 DrawTri(formationEntry.RelativeRotation, posVector2D, color);
                 //Draw midpoint

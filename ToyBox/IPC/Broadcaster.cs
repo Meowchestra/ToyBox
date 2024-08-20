@@ -22,11 +22,11 @@ public static class Broadcaster
     private static readonly TinyMessageBus MessagebusSend = new("DalamudBroadcaster.ToyBox");
     private static readonly TinyMessageBus MessagebusReceive = new("DalamudBroadcaster.ToyBox");
 
-    private static ToyBox plugin { get; set; }
+    private static ToyBox? plugin { get; set; }
 
-    public static IClientState clientState;
+    public static IClientState? clientState;
 
-    public static void Initialize(ToyBox pluginmain)
+    public static void Initialize(ToyBox? pluginmain)
     {
         plugin = pluginmain;
         //Init the messagebus
@@ -36,10 +36,10 @@ public static class Broadcaster
     //Messagebus Actions
     private static unsafe void MessageReceived(byte[] message)
     {
-        Api.Framework.RunOnTick(delegate
+        Api.Framework?.RunOnTick(delegate
         {
             var localPlayer = Api.ClientState;
-            BroadcastMessage msg = JsonConvert.DeserializeObject<BroadcastMessage>(Encoding.UTF8.GetString(message));
+            var msg = JsonConvert.DeserializeObject<BroadcastMessage>(Encoding.UTF8.GetString(message));
             if (msg is null) { return; }
             if (localPlayer is null) { return; }
 
@@ -67,22 +67,22 @@ public static class Broadcaster
                 case MessageType.FormationData:
                     if (localPlayer.LocalContentId == msg.LocalContentId)
                         break;
-                    if (Convert.ToUInt64(msg.message[0]) == Api.ClientState.LocalContentId)
+                    if (Api.ClientState != null && Convert.ToUInt64(msg.message[0]) == Api.ClientState.LocalContentId)
                     {
-                        string[] temp = msg.message[1].Substring(1, msg.message[1].Length - 2).Split(',');
-                        float x = float.Parse(temp[0], NumberStyles.Float, CultureInfo.InvariantCulture);
-                        float y = float.Parse(temp[1], NumberStyles.Float, CultureInfo.InvariantCulture);
-                        float z = float.Parse(temp[2], NumberStyles.Float, CultureInfo.InvariantCulture);
-                        float w = float.Parse(msg.message[2], NumberStyles.Float, CultureInfo.InvariantCulture);
+                        var temp = msg.message[1].Substring(1, msg.message[1].Length - 2).Split(',');
+                        var x = float.Parse(temp[0], NumberStyles.Float, CultureInfo.InvariantCulture);
+                        var y = float.Parse(temp[1], NumberStyles.Float, CultureInfo.InvariantCulture);
+                        var z = float.Parse(temp[2], NumberStyles.Float, CultureInfo.InvariantCulture);
+                        var w = float.Parse(msg.message[2], NumberStyles.Float, CultureInfo.InvariantCulture);
                         IPCProvider.MoveToAction(x,y,z, w);
                     }
                     break;
                 case MessageType.ClientLogout:
-                    if (Convert.ToUInt64(msg.message[0]) == Api.ClientState.LocalContentId)
+                    if (Api.ClientState != null && Convert.ToUInt64(msg.message[0]) == Api.ClientState.LocalContentId)
                         IPCProvider.CharacterLogoutAction();
                     break;
                 case MessageType.GameShutdown:
-                    if (Convert.ToUInt64(msg.message[0]) == Api.ClientState.LocalContentId)
+                    if (Api.ClientState != null && Convert.ToUInt64(msg.message[0]) == Api.ClientState.LocalContentId)
                         IPCProvider.GameShutdownAction();
                     break;
                 case MessageType.FormationStop:

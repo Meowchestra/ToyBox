@@ -3,7 +3,6 @@ using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using ToyBox.Formations;
-using ToyBox.IPC;
 
 namespace ToyBox.Windows;
 
@@ -24,7 +23,7 @@ public class BtBFormation : Window, IDisposable
     public void Dispose() { }
 
 
-    private FileDialogManager fileDialogManager;
+    private FileDialogManager? fileDialogManager;
     string loadedFilePath = "";
 
     static List<string> comboData = [];
@@ -37,7 +36,8 @@ public class BtBFormation : Window, IDisposable
             if (fileDialogManager == null)
             {
                 fileDialogManager                  =  new FileDialogManager();
-                Api.PluginInterface.UiBuilder.Draw += fileDialogManager.Draw;
+                if (Api.PluginInterface != null) 
+                    Api.PluginInterface.UiBuilder.Draw += fileDialogManager.Draw;
                 fileDialogManager.OpenFileDialog("Select File...", "json File{.json}", (b, files) =>
                 {
                     if (files.Count != 1) return;
@@ -50,9 +50,9 @@ public class BtBFormation : Window, IDisposable
 
         if (ImGui.BeginCombo("##combo", current_item))
         {
-            for (int n = 0; n < comboData.Count; n++)
+            for (var n = 0; n < comboData.Count; n++)
             {
-                bool is_selected = current_item == comboData[n];
+                var is_selected = current_item == comboData[n];
                 if (ImGui.Selectable(comboData[n], is_selected))
                     current_item = comboData[n];
                 if (is_selected)
@@ -72,7 +72,7 @@ public class BtBFormation : Window, IDisposable
                 }
                 else
                 {
-                    FormationsData fData = FormationFactory.ConvertBtBFormation(loadedFilePath, current_item);
+                    var fData = FormationFactory.ConvertBtBFormation(loadedFilePath, current_item);
                     if (fData != null)
                     {
                         configuration.FormationsList.Add(fData);
