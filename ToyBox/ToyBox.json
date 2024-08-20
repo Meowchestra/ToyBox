@@ -1,0 +1,14 @@
+{
+  "Author": "GiR-Zippo, Meowchestra",
+  "Name": "ToyBox",
+  "Punchline": "Frontend addon for Whiskers.",
+  "Description": "Companion plugin addon for Whiskers that extends controls as an alternative to BardToolbox.",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "MeowMusic",
+    "Midi",
+    "Performance",
+	"Bard",
+	"Whiskers"
+  ]
+}
