@@ -2,6 +2,8 @@ using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
+using OtterGui.Text;
+using OtterGuiInternal.Structs;
 using ToyBox.Formations;
 using ToyBox.Functions;
 using ToyBox.IPC;
@@ -182,11 +184,11 @@ public class MainWindow : Window, IDisposable
                         MiscFunctions.EnableBCForClient(p);
                     }
 
-                    if (OtterGui.Text.ImUtf8.IconButton(FontAwesomeIcon.SignOutAlt))
+                    if (ImUtf8.IconButton(FontAwesomeIcon.SignOutAlt))
                         GameConfig.Logout(p.LocalContentId);
 
                     ImGui.SameLine();
-                    if (OtterGui.Text.ImUtf8.IconButton(FontAwesomeIcon.PowerOff))
+                    if (ImUtf8.IconButton(FontAwesomeIcon.PowerOff))
                         GameConfig.Shutdown(p.LocalContentId);
 
                     ImGui.NextColumn();
