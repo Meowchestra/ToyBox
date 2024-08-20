@@ -1,9 +1,9 @@
 using System.Numerics;
 using Dalamud.Interface.ImGuiFileDialog;
 using Dalamud.Interface.Windowing;
+using ImGuiNET;
 using ToyBox.Formations;
 using ToyBox.IPC;
-using ImGuiNET;
 
 namespace ToyBox.Windows;
 
@@ -16,18 +16,18 @@ public class BtBFormation : Window, IDisposable
         ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
         ImGuiWindowFlags.NoScrollWithMouse)
     {
-        this.Size = new Vector2(350, 300);
-        this.SizeCondition = ImGuiCond.Always;
-        this.configuration = plugin.Configuration;
+        Size          = new Vector2(350, 300);
+        SizeCondition = ImGuiCond.Always;
+        configuration = plugin.Configuration;
     }
 
     public void Dispose() { }
 
 
-    private FileDialogManager fileDialogManager = null;
+    private FileDialogManager fileDialogManager;
     string loadedFilePath = "";
 
-    static List<string> comboData = new List<string>();
+    static List<string> comboData = [];
     static string current_item = "";
     static string error_msg = "";
     public override void Draw()
@@ -36,13 +36,13 @@ public class BtBFormation : Window, IDisposable
         {
             if (fileDialogManager == null)
             {
-                fileDialogManager = new FileDialogManager();
+                fileDialogManager                  =  new FileDialogManager();
                 Api.PluginInterface.UiBuilder.Draw += fileDialogManager.Draw;
                 fileDialogManager.OpenFileDialog("Select File...", "json File{.json}", (b, files) =>
                 {
                     if (files.Count != 1) return;
                     loadedFilePath = files[0];
-                    comboData = FormationFactory.ReadBtBFormationNames(loadedFilePath);
+                    comboData      = FormationFactory.ReadBtBFormationNames(loadedFilePath);
                 }, 1, loadedFilePath, true);
                 fileDialogManager = null;
             }
@@ -52,7 +52,7 @@ public class BtBFormation : Window, IDisposable
         {
             for (int n = 0; n < comboData.Count; n++)
             {
-                bool is_selected = (current_item == comboData[n]);
+                bool is_selected = current_item == comboData[n];
                 if (ImGui.Selectable(comboData[n], is_selected))
                     current_item = comboData[n];
                 if (is_selected)

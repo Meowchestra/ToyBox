@@ -11,9 +11,9 @@ public class ConfigWindow : Window, IDisposable
     public ConfigWindow(ToyBox plugin) : base(
         "Config Window")
     {
-        this.Size = new Vector2(350, 300);
-        this.SizeCondition = ImGuiCond.Appearing;
-        this.configuration = plugin.Configuration;
+        Size          = new Vector2(350, 300);
+        SizeCondition = ImGuiCond.Appearing;
+        configuration = plugin.Configuration;
     }
 
     public void Dispose() { }

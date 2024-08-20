@@ -11,12 +11,12 @@ public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
 
-    public List<FormationsData> FormationsList { get; set; } = new List<FormationsData>();
+    public List<FormationsData> FormationsList { get; set; } = [];
 
-    public Dictionary<long, KeyValuePair<string, string>> ContentIDLookup { get; set; } = new Dictionary<long, KeyValuePair<string, string>>();
+    public Dictionary<long, KeyValuePair<string, string>> ContentIDLookup { get; set; } = new();
 
 
-    public bool AllowMultiBox { get; set; } = false;
+    public bool AllowMultiBox { get; set; }
 
     public bool MainWindowVisible { get; set; } = true;
 
@@ -35,6 +35,6 @@ public class Configuration : IPluginConfiguration
 
     public void Save()
     {
-        this.pluginInterface!.SavePluginConfig(this);
+        pluginInterface!.SavePluginConfig(this);
     }
 }

@@ -1,11 +1,10 @@
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using ToyBox.Windows;
+using ToyBox.Functions;
 using ToyBox.IPC;
 using ToyBox.Misc;
-using ToyBox.Functions;
-
+using ToyBox.Windows;
 
 namespace ToyBox;
 public class ToyBox : IDalamudPlugin
@@ -17,9 +16,9 @@ public class ToyBox : IDalamudPlugin
     public Configuration Configuration { get; init; }
     public WindowSystem WindowSystem = new("ToyBox");
 
-    public Api api { get; set; }
+    public Api? api { get; set; }
 
-    private Commands commands { get; set; } = null;
+    private Commands commands { get; set; }
 
     private ConfigWindow ConfigWindow { get; init; }
     private BtBFormation BtBFormation { get; init; }
@@ -28,7 +27,7 @@ public class ToyBox : IDalamudPlugin
 
     public bool SuspendMainUi { get; set; } = false;
 
-    private ulong ContentId { get; set; } = 0;
+    private ulong ContentId { get; set; }
     private string PlayerName { get; set; } = "";
 
     public ToyBox(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager commandManager, IClientState clientState, IPartyList partyList)
@@ -37,8 +36,8 @@ public class ToyBox : IDalamudPlugin
 
         PluginInterface = pluginInterface;
 
-        this.Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        this.Configuration.Initialize(PluginInterface);
+        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Configuration.Initialize(PluginInterface);
 
         //Init the IPC - Receiver
         IPCProvider.Initialize();
@@ -46,14 +45,14 @@ public class ToyBox : IDalamudPlugin
         BackgroundRunner.Instance.Initialize(this);
         CamHack.Instance.Initialize();
 
-        Api.ClientState.Login += OnLogin;
+        Api.ClientState.Login  += OnLogin;
         Api.ClientState.Logout += OnLogout;
 
         //Build and register the Windows
-        ConfigWindow = new ConfigWindow(this);
-        BtBFormation = new BtBFormation(this);
+        ConfigWindow    = new ConfigWindow(this);
+        BtBFormation    = new BtBFormation(this);
         FormationEditor = new FormationEditor(this);
-        MainWindow = new MainWindow(this);
+        MainWindow      = new MainWindow(this);
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(BtBFormation);
@@ -62,9 +61,9 @@ public class ToyBox : IDalamudPlugin
 
         commands = new Commands(this, commandManager);
 
-        PluginInterface.UiBuilder.Draw += DrawUI;
+        PluginInterface.UiBuilder.Draw         += DrawUI;
         PluginInterface.UiBuilder.OpenConfigUi += UiBuilder_OpenConfigUi;
-        PluginInterface.UiBuilder.OpenMainUi += UiBuilder_OpenMainUi;
+        PluginInterface.UiBuilder.OpenMainUi   += UiBuilder_OpenMainUi;
 
         MainWindow.IsOpen = Configuration.MainWindowVisible;
         OnLogin();
@@ -83,7 +82,7 @@ public class ToyBox : IDalamudPlugin
     public void Dispose()
     {
         BackgroundRunner.Instance.Dispose();
-        Api.ClientState.Login -= OnLogin;
+        Api.ClientState.Login  -= OnLogin;
         Api.ClientState.Logout -= OnLogout;
 
         OnLogout();
@@ -92,7 +91,7 @@ public class ToyBox : IDalamudPlugin
         IPCProvider.Dispose();
         CamHack.Instance.Dispose();
 
-        this.WindowSystem.RemoveAllWindows();
+        WindowSystem.RemoveAllWindows();
 
         ConfigWindow.Dispose();
         MainWindow.Dispose();
@@ -110,14 +109,13 @@ public class ToyBox : IDalamudPlugin
         if (!Api.ClientState.LocalPlayer.IsValid())
             return;
 
-        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCAdd, new System.Collections.Generic.List<string>()
-        {
+        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCAdd, [
             Api.ClientState.LocalPlayer.Name.TextValue,
             Api.ClientState.LocalPlayer.HomeWorld.Id.ToString(),
             "0"
-        });
+        ]);
 
-        ContentId = Api.ClientState.LocalContentId;
+        ContentId  = Api.ClientState.LocalContentId;
         PlayerName = Api.ClientState.LocalPlayer.Name.TextValue;
     }
 
@@ -127,25 +125,21 @@ public class ToyBox : IDalamudPlugin
         {
             if (ContentId == 0)
                 return;
-            Broadcaster.SendMessage(ContentId, MessageType.BCRemove, new System.Collections.Generic.List<string>()
-            {
-                PlayerName
-            });
-            ContentId = 0;
+            Broadcaster.SendMessage(ContentId, MessageType.BCRemove, [PlayerName]);
+            ContentId  = 0;
             PlayerName = "";
             return;
         }
-        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCRemove, new System.Collections.Generic.List<string>()
-        {
+        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCRemove, [
             Api.ClientState.LocalPlayer.Name.TextValue,
             Api.ClientState.LocalPlayer.HomeWorld.Id.ToString()
-        });
+        ]);
     }
 
     private void DrawUI()
     {
         if (!SuspendMainUi)
-            this.WindowSystem.Draw();
+            WindowSystem.Draw();
     }
 
     public bool MainWindowState() => MainWindow.IsOpen;

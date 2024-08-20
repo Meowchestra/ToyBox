@@ -151,19 +151,19 @@ public static class IPCProvider
 
     public static void Dispose()
     {
-        SetGfxLow?.Unsubscribe(SetGfxLowAction);
-        SendChat?.Unsubscribe(SendChatAction);
-        PartyInvite?.Unsubscribe(PartyInviteAction);
-        PartyInviteAccept?.Unsubscribe(PartyInviteAcceptAction);
-        PartySetLead?.Unsubscribe(PartySetLeadAction);
-        PartyLeave?.Unsubscribe(PartyLeaveAction);
-        PartyEnterHouse?.Unsubscribe(PartyEnterHouseAction);
-        PartyTeleport?.Unsubscribe(PartyTeleportAction);
-        PartyFollow?.Unsubscribe(PartyFollowAction);
-        PartyUnFollow?.Unsubscribe(PartyUnFollowAction);
-        MoveTo?.Unsubscribe(MoveToAction);
-        MoveStop?.Unsubscribe(MoveStopAction);
-        CharacterLogout?.Unsubscribe(CharacterLogoutAction);
-        GameShutdown?.Unsubscribe(GameShutdownAction);
+        SetGfxLow.Unsubscribe(SetGfxLowAction);
+        SendChat.Unsubscribe(SendChatAction);
+        PartyInvite.Unsubscribe(PartyInviteAction);
+        PartyInviteAccept.Unsubscribe(PartyInviteAcceptAction);
+        PartySetLead.Unsubscribe(PartySetLeadAction);
+        PartyLeave.Unsubscribe(PartyLeaveAction);
+        PartyEnterHouse.Unsubscribe(PartyEnterHouseAction);
+        PartyTeleport.Unsubscribe(PartyTeleportAction);
+        PartyFollow.Unsubscribe(PartyFollowAction);
+        PartyUnFollow.Unsubscribe(PartyUnFollowAction);
+        MoveTo.Unsubscribe(MoveToAction);
+        MoveStop.Unsubscribe(MoveStopAction);
+        CharacterLogout.Unsubscribe(CharacterLogoutAction);
+        GameShutdown.Unsubscribe(GameShutdownAction);
     }
 }

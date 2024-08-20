@@ -1,28 +1,28 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-using ToyBox.IPC;
-using Newtonsoft.Json;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Numerics;
+using Dalamud.Game.ClientState.Objects.SubKinds;
+using Newtonsoft.Json;
+using ToyBox.IPC;
 
 namespace ToyBox.Formations;
 
 public class FormationsData
 {
     public string Name;
-    public Dictionary<long, FormationEntry> formationEntry = new Dictionary<long, FormationEntry>();
+    public Dictionary<long, FormationEntry> formationEntry = new();
 }
 
 public class FormationEntry
 {
-    public int Index { get; set; } = 0;
-    public long CID { get; set; } = 0;
+    public int Index { get; set; }
+    public long CID { get; set; }
     public Vector3 RelativePosition;
     public float RelativeRotation;
 }
 
 public static class FormationFactory
 {
-    public static unsafe FormationsData CreateNewFormation()
+    public static FormationsData CreateNewFormation()
     {
         FormationsData formation = new FormationsData();
         int index = 0;
@@ -67,24 +67,25 @@ public static class FormationFactory
 
         foreach (FormationEntry entry in formation.formationEntry.Values)
         {
-            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.FormationData, new List<string>()
-            {
+            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.FormationData, [
                 entry.CID.ToString(),
-                FormationCalculation.RelativeToAbsolute(entry, Api.ClientState.LocalPlayer).Key.ToString("G", CultureInfo.InvariantCulture),
-                (FormationCalculation.RelativeToAbsolute(entry, Api.ClientState.LocalPlayer).Value + 3.1415927f).ToString("G", CultureInfo.InvariantCulture)
-            });
+                FormationCalculation.RelativeToAbsolute(entry, Api.ClientState.LocalPlayer).Key
+                    .ToString("G", CultureInfo.InvariantCulture),
+                (FormationCalculation.RelativeToAbsolute(entry, Api.ClientState.LocalPlayer).Value + 3.1415927f)
+                .ToString("G", CultureInfo.InvariantCulture)
+            ]);
         }
     }
 
     public static void StopFormation()
     {
         IPCProvider.MoveStopAction();
-        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.FormationStop, new List<string>());
+        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.FormationStop, []);
     }
 
     public static List<string> ReadBtBFormationNames(string filename)
     {
-        List<string> outdata = new List<string>();
+        List<string> outdata = [];
         dynamic jData = JsonConvert.DeserializeObject(File.ReadAllText(filename));
         var f = jData["SavedFormationList"];
         foreach (var name in f)
@@ -131,7 +132,7 @@ public static class FormationCalculation
 {
     internal static KeyValuePair<Vector3, float> RelativeToAbsolute(FormationEntry relativePosition, IPlayerCharacter absolutTarget)
     {
-        KeyValuePair<Vector3, float> absolutePosition = FormationCalculation.RelativeToAbsolute(new KeyValuePair<Vector3, float>(relativePosition.RelativePosition, relativePosition.RelativeRotation), 
+        KeyValuePair<Vector3, float> absolutePosition = RelativeToAbsolute(new KeyValuePair<Vector3, float>(relativePosition.RelativePosition, relativePosition.RelativeRotation), 
             new KeyValuePair<Vector3, float>(absolutTarget.Position,            absolutTarget.Rotation));
         return new KeyValuePair<Vector3, float>(absolutePosition.Key, absolutePosition.Value);
     }
@@ -149,6 +150,6 @@ public static class FormationCalculation
     internal static KeyValuePair<Vector3, float> AbsoluteToRelative(KeyValuePair<Vector3, float> target, KeyValuePair<Vector3, float> center)
     {
         Matrix4x4 rotationMatrix = Matrix4x4.CreateRotationY(-center.Value - MathF.PI);
-        return new KeyValuePair<Vector3, float>(Vector3.Transform((target.Key - center.Key), rotationMatrix), (target.Value - center.Value));
+        return new KeyValuePair<Vector3, float>(Vector3.Transform(target.Key - center.Key, rotationMatrix), target.Value - center.Value);
     }
 }

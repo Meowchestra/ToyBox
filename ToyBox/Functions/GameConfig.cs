@@ -9,7 +9,7 @@ public static class GameConfig
         if (Api.ClientState.LocalPlayer == null)
             return;
 
-        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.SetGfx, new List<string>() { true.ToString() });
+        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.SetGfx, [true.ToString()]);
     }
 
     public static void Reset()
@@ -17,7 +17,7 @@ public static class GameConfig
         if (Api.ClientState.LocalPlayer == null)
             return;
 
-        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.SetGfx, new List<string>() { false.ToString() });
+        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.SetGfx, [false.ToString()]);
     }
 
     public static void Logout(ulong cid)
@@ -30,7 +30,7 @@ public static class GameConfig
             IPCProvider.CharacterLogoutAction();
             return;
         }
-        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.ClientLogout, new List<string>() { cid.ToString() });
+        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.ClientLogout, [cid.ToString()]);
     }
 
     public static void Shutdown(ulong cid)
@@ -43,7 +43,7 @@ public static class GameConfig
             IPCProvider.GameShutdownAction();
             return;
         }
-        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.GameShutdown, new List<string>() { cid.ToString() });
+        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.GameShutdown, [cid.ToString()]);
     }
 
 }

@@ -1,9 +1,10 @@
+using System.Globalization;
+using System.Text;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
-using ToyBox.Functions;
 using Newtonsoft.Json;
-using System.Text;
 using TinyIpc.Messaging;
+using ToyBox.Functions;
 
 namespace ToyBox.IPC;
 
@@ -11,8 +12,8 @@ namespace ToyBox.IPC;
 public class BroadcastMessage
 {
     public ushort msgType { get; init; } = (ushort)MessageType.None;
-    public ulong LocalContentId { get; init; } = 0;
-    public List<string> message { get; init; } = new List<string>();
+    public ulong LocalContentId { get; init; }
+    public List<string> message { get; init; } = [];
 }
 
 public static class Broadcaster
@@ -21,7 +22,7 @@ public static class Broadcaster
     private static readonly TinyMessageBus MessagebusSend = new("DalamudBroadcaster.ToyBox");
     private static readonly TinyMessageBus MessagebusReceive = new("DalamudBroadcaster.ToyBox");
 
-    private static ToyBox plugin { get; set; } = null;
+    private static ToyBox plugin { get; set; }
 
     public static IClientState clientState;
 
@@ -38,7 +39,7 @@ public static class Broadcaster
         Api.Framework.RunOnTick(delegate
         {
             var localPlayer = Api.ClientState;
-            BroadcastMessage msg = JsonConvert.DeserializeObject<BroadcastMessage>(Encoding.UTF8.GetString((byte[])message));
+            BroadcastMessage msg = JsonConvert.DeserializeObject<BroadcastMessage>(Encoding.UTF8.GetString(message));
             if (msg is null) { return; }
             if (localPlayer is null) { return; }
 
@@ -69,10 +70,10 @@ public static class Broadcaster
                     if (Convert.ToUInt64(msg.message[0]) == Api.ClientState.LocalContentId)
                     {
                         string[] temp = msg.message[1].Substring(1, msg.message[1].Length - 2).Split(',');
-                        float x = float.Parse(temp[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                        float y = float.Parse(temp[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                        float z = float.Parse(temp[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-                        float w = float.Parse(msg.message[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+                        float x = float.Parse(temp[0], NumberStyles.Float, CultureInfo.InvariantCulture);
+                        float y = float.Parse(temp[1], NumberStyles.Float, CultureInfo.InvariantCulture);
+                        float z = float.Parse(temp[2], NumberStyles.Float, CultureInfo.InvariantCulture);
+                        float w = float.Parse(msg.message[2], NumberStyles.Float, CultureInfo.InvariantCulture);
                         IPCProvider.MoveToAction(x,y,z, w);
                     }
                     break;
@@ -140,7 +141,7 @@ public static class Broadcaster
                         CamHack.Instance.Disable();
                     break;
             }
-        }, default(TimeSpan), 0, default(CancellationToken));
+        });
 
 
     }

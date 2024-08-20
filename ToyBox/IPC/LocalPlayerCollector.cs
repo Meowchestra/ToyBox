@@ -4,11 +4,11 @@ namespace ToyBox.IPC;
 
 public class LocalPlayer
 {
-    public ulong LocalContentId { get; init; } = 0;
+    public ulong LocalContentId { get; init; }
     public string Name { get; init; } = "";
-    public uint HomeWorld { get; init; } = 0;
+    public uint HomeWorld { get; init; }
     public bool BroadCastEnabled { get; set; }  = true;
-    public int Affinity { get; set; } = 0;
+    public int Affinity { get; set; }
 
     public unsafe string GetWorldName()
     {
@@ -18,20 +18,19 @@ public class LocalPlayer
 
 public static class LocalPlayerCollector
 {
-    public static List<LocalPlayer> localPlayers = new List<LocalPlayer>();
+    public static List<LocalPlayer> localPlayers = [];
 
     public static void Add(ulong localContentId, string name, uint HomeWorld, int affinity)
     {
         var t = localPlayers.FirstOrDefault(n => n.LocalContentId == localContentId && n.Name == name);
         if (t is null)
         {
-            localPlayers.Add(new LocalPlayer() { LocalContentId = localContentId, Name = name, HomeWorld = HomeWorld });
-            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCAdd, new List<string>()
-            {
+            localPlayers.Add(new LocalPlayer { LocalContentId = localContentId, Name = name, HomeWorld = HomeWorld });
+            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCAdd, [
                 Api.ClientState.LocalPlayer.Name.TextValue,
                 Api.ClientState.LocalPlayer.HomeWorld.Id.ToString(),
                 "0"
-            });
+            ]);
         }
     }
 

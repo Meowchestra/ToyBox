@@ -8,7 +8,7 @@ public class BackgroundRunner : IDisposable
     private static readonly Lazy<BackgroundRunner> LazyInstance = new(static () => new BackgroundRunner());
     public static BackgroundRunner Instance => LazyInstance.Value;
 
-    private CancellationTokenSource cancelToken = new CancellationTokenSource();
+    private CancellationTokenSource cancelToken = new();
 
     private static ToyBox plugin { get; set; }
 
@@ -22,7 +22,7 @@ public class BackgroundRunner : IDisposable
         {
             cancelToken = new CancellationTokenSource();
             Task.Factory.StartNew(() => SlowRunner(cancelToken.Token), TaskCreationOptions.LongRunning);
-        }, default(TimeSpan), 0, default(CancellationToken));
+        });
     }
 
     public void Dispose()
@@ -52,4 +52,3 @@ public class BackgroundRunner : IDisposable
             plugin.SuspendMainUi = false;
     }
 }
-

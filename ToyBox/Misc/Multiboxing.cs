@@ -1,12 +1,12 @@
-﻿using ToyBox.IPC;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
+using ToyBox.IPC;
 
 namespace ToyBox.Misc;
 
 public static partial class Multiboxing
 {
-    public unsafe static void RemoveHandle()
+    public static void RemoveHandle()
     {
         foreach (var handle in EnumHandles())
         {

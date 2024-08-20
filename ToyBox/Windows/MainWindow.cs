@@ -1,22 +1,23 @@
 using System.Numerics;
+using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
+using ImGuiNET;
 using ToyBox.Formations;
 using ToyBox.Functions;
 using ToyBox.IPC;
 using ToyBox.Misc;
-using ImGuiNET;
 
 namespace ToyBox.Windows;
 
 public class MainWindow : Window, IDisposable
 {
     private ToyBox plugin;
-    private FormationsData selected_formation = null;
+    private FormationsData selected_formation;
 
     public MainWindow(ToyBox plugin) : base(
         "ToyBox", ImGuiWindowFlags.AlwaysUseWindowPadding)
     {
-        this.SizeConstraints = new WindowSizeConstraints
+        SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new Vector2(375, 330),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
@@ -55,7 +56,7 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine();
             if (ImGui.Button("Disable"))
             {
-                Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.CamHack, new List<string>() { (false).ToString() });
+                Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.CamHack, [false.ToString()]);
                 CamHack.Instance.Disable();
             }
         }
@@ -134,7 +135,7 @@ public class MainWindow : Window, IDisposable
                 var comboData = plugin.Configuration.FormationsList;
                 for (int n = 0; n < plugin.Configuration.FormationsList.Count; n++)
                 {
-                    bool is_selected = (selected_formation == comboData[n]);
+                    bool is_selected = selected_formation == comboData[n];
                     if (ImGui.Selectable(comboData[n].Name, is_selected))
                         selected_formation = comboData[n];
                     if (is_selected)
@@ -180,11 +181,11 @@ public class MainWindow : Window, IDisposable
                         MiscFunctions.EnableBCForClient(p);
                     }
 
-                    if (OtterGui.Text.ImUtf8.IconButton(Dalamud.Interface.FontAwesomeIcon.SignOutAlt))
+                    if (OtterGui.Text.ImUtf8.IconButton(FontAwesomeIcon.SignOutAlt))
                         GameConfig.Logout(p.LocalContentId);
 
                     ImGui.SameLine();
-                    if (OtterGui.Text.ImUtf8.IconButton(Dalamud.Interface.FontAwesomeIcon.PowerOff))
+                    if (OtterGui.Text.ImUtf8.IconButton(FontAwesomeIcon.PowerOff))
                         GameConfig.Shutdown(p.LocalContentId);
 
                     ImGui.NextColumn();
@@ -204,7 +205,7 @@ public class MainWindow : Window, IDisposable
         ImGui.BeginChildFrame(2, new ImVec2(0, 0), ImGuiWindowFlags.HorizontalScrollbar);
         for (int i = 0; i < ProcAffinity.GetCPUCores(); i++)
         {
-            ImGui.PushID("##CPU" + i.ToString());
+            ImGui.PushID("##CPU" + i);
 
             bool flag = false;
             if ((AffinityMask & (1 << i)) > 0)

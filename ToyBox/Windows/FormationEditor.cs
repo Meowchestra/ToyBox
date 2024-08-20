@@ -1,11 +1,11 @@
 using System.Numerics;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
-using ToyBox.Formations;
-using ToyBox.IPC;
 using ImGuiNET;
 using ImPlotNET;
 using Newtonsoft.Json;
+using ToyBox.Formations;
+using ToyBox.IPC;
 
 namespace ToyBox.Windows;
 
@@ -16,15 +16,15 @@ public class FormationEditor : Window, IDisposable
     public FormationEditor(ToyBox plugin) : base(
         "FormationEditor")
     {
-        this.Size = new Vector2(1280, 800);
-        this.SizeCondition = ImGuiCond.Appearing;
-        this.configuration = plugin.Configuration;
+        Size          = new Vector2(1280, 800);
+        SizeCondition = ImGuiCond.Appearing;
+        configuration = plugin.Configuration;
     }
 
     public void Dispose() { }
 
     string selected_formation = "";
-    FormationsData formation = null;
+    FormationsData formation;
 
     public override void Draw()
     {
@@ -58,7 +58,7 @@ public class FormationEditor : Window, IDisposable
         {
             var formations = FormationFactory.CreateNewFormation();
             selected_formation = formations.Name;
-            formation = formations;
+            formation          = formations;
         }
         ImGui.SameLine();
         if (ImGui.Button("Test"))
@@ -128,7 +128,7 @@ public class FormationEditor : Window, IDisposable
         bool ret = ImGui.SliderFloat(label, ref v, v_min, v_max);
         if (ImGui.BeginPopupContextItem(label))
         {
-            if (ImGui.MenuItem("Reset to: " + v_default.ToString()))
+            if (ImGui.MenuItem("Reset to: " + v_default))
                 v = v_default;
             ImGui.MenuItem("Close");
             ImGui.EndPopup();
@@ -144,13 +144,13 @@ public class FormationEditor : Window, IDisposable
     /// <param name="offsettemplate"></param>
     private static void DrawTri(float inputRotation, Vector2 position, uint color)
     {
-        Vector2[] triangle = new Vector2[4]
-        {
-            new Vector2(0.0f, 1f),
-            new Vector2(1f, -1f),
-            new Vector2(0.0f, -1.0f),
-            new Vector2(-1f, -1f)
-        };
+        Vector2[] triangle =
+        [
+            new(0.0f, 1f),
+            new(1f, -1f),
+            new(0.0f, -1.0f),
+            new(-1f, -1f)
+        ];
         Matrix3x2 rotationMatrix = Matrix3x2.CreateRotation(inputRotation);
         for (int index = 0; index < triangle.Length; index++)
         {

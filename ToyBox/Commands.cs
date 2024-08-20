@@ -1,7 +1,7 @@
-﻿using Dalamud.Game.Command;
+﻿using System.Text.RegularExpressions;
+using Dalamud.Game.Command;
 using Dalamud.Plugin.Services;
 using ToyBox.IPC;
-using System.Text.RegularExpressions;
 
 namespace ToyBox;
 
@@ -14,7 +14,7 @@ public class Commands : IDisposable
 
     public Commands(ToyBox pluginmain, ICommandManager manager)
     {
-        plugin = pluginmain;
+        plugin         = pluginmain;
         CommandManager = manager;
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
@@ -45,9 +45,9 @@ public class Commands : IDisposable
             return;
 
         if (command.Equals(CommandBrName))
-            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.Chat, new List<string>() { (true).ToString(), args });
+            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.Chat, [true.ToString(), args]);
         else
-            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.Chat, new List<string>() { (false).ToString(), args });
+            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.Chat, [false.ToString(), args]);
     }
 
     private void OnCommand(string command, string args)
@@ -65,18 +65,18 @@ public class Commands : IDisposable
         {
             case "br":
             case "broadcast":
+            {
+                if (regex.Groups.Count < 2 || string.IsNullOrEmpty(regex.Groups[2].Value))
                 {
-                    if (regex.Groups.Count < 2 || string.IsNullOrEmpty(regex.Groups[2].Value))
-                    {
-                        Api.ChatGui.Print("[Broadcast] missing parameter");
-                        return;
-                    }
-                    var arg = regex.Groups[2].Value;
-                    if (Api.ClientState.LocalPlayer == null)
-                        return;
-
-                    Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.Chat, new List<string>() { arg });
+                    Api.ChatGui?.Print("[Broadcast] missing parameter");
+                    return;
                 }
+                var arg = regex.Groups[2].Value;
+                if (Api.ClientState?.LocalPlayer == null)
+                    return;
+
+                Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.Chat, [arg]);
+            }
                 break;
         }
     }

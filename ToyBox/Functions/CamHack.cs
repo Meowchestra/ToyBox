@@ -1,8 +1,8 @@
-﻿using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ToyBox.IPC;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Runtime.InteropServices;
 using Dalamud.Hooking;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using ToyBox.IPC;
 
 namespace ToyBox.Functions;
 
@@ -16,7 +16,7 @@ public unsafe class CamHack : IDisposable
 
     private static readonly CameraManager* CameraManager = (CameraManager*)FFXIVClientStructs.FFXIV.Client.Game.Control.CameraManager.Instance();
 
-    private static bool Active { get; set; } = false;
+    private static bool Active { get; set; }
 
     public delegate void GetCameraPositionDelegate(GameCamera* camera, GameObject* target, Vector3* position, bool swapPerson);
     private static Hook<GetCameraPositionDelegate> _getPositionDeltaHook;
@@ -29,7 +29,7 @@ public unsafe class CamHack : IDisposable
         else
         {
             camera->lookAtHeightOffset += 10;
-            position->Y += 3000f;
+            position->Y                += 3000f;
         }
     }
 
@@ -51,7 +51,7 @@ public unsafe class CamHack : IDisposable
 
     public void EnableOthers()
     {
-        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.CamHack, new List<string>() { (true).ToString() });
+        Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.CamHack, [true.ToString()]);
     }
 
     public void Disable()
@@ -63,7 +63,7 @@ public unsafe class CamHack : IDisposable
         Api.Framework.RunOnTick(delegate
         {
             _getPositionDeltaHook?.Disable();
-        }, default(TimeSpan), 10, default(CancellationToken));
+        }, default(TimeSpan), 10);
 
     }
 
@@ -105,13 +105,13 @@ public unsafe struct GameCamera
     [FieldOffset(0x90)] public float lookAtX; // Position that the camera is focused on (Actual position when zoom is 0)
     [FieldOffset(0x94)] public float lookAtY;
     [FieldOffset(0x98)] public float lookAtZ;
-    [FieldOffset(0x114)] public float currentZoom; // 6
-    [FieldOffset(0x118)] public float minZoom; // 1.5
-    [FieldOffset(0x11C)] public float maxZoom; // 20
-    [FieldOffset(0x120)] public float maxFoV; // 0.78
-    [FieldOffset(0x124)] public float minFoV; // 0.69
-    [FieldOffset(0x128)] public float currentFoV; // 0.78
-    [FieldOffset(0x12C)] public float addedFoV; // 0
+    [FieldOffset(0x114)] public float currentZoom;      // 6
+    [FieldOffset(0x118)] public float minZoom;          // 1.5
+    [FieldOffset(0x11C)] public float maxZoom;          // 20
+    [FieldOffset(0x120)] public float maxFoV;           // 0.78
+    [FieldOffset(0x124)] public float minFoV;           // 0.69
+    [FieldOffset(0x128)] public float currentFoV;       // 0.78
+    [FieldOffset(0x12C)] public float addedFoV;         // 0
     [FieldOffset(0x130)] public float currentHRotation; // -pi -> pi, default is pi
     [FieldOffset(0x134)] public float currentVRotation; // -0.349066
     [FieldOffset(0x138)] public float hRotationDelta;
