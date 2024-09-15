@@ -16,7 +16,7 @@
     <Description>Companion plugin addon for Whiskers that extends controls as an alternative to BardToolbox.</Description>
     <PackageProjectUrl>https://github.com/Meowchestra/ToyBox</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-    <Version>0.0.2.10</Version>
+    <Version>0.0.2.11</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
