@@ -1,5 +1,4 @@
 ﻿using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using ToyBox.IPC;
 
 namespace ToyBox.Misc;
 

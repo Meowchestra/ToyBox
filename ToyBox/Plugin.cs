@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
@@ -25,7 +26,7 @@ public class ToyBox : IDalamudPlugin
     private FormationEditor FormationEditor { get; init; }
     private MainWindow MainWindow { get; init; }
 
-    public bool SuspendMainUi { get; set; } = false;
+    public bool SuspendMainUi { get; set; }
 
     private ulong ContentId { get; set; }
     private string PlayerName { get; set; } = "";
@@ -125,6 +126,9 @@ public class ToyBox : IDalamudPlugin
 
         ContentId  = Api.ClientState.LocalContentId;
         PlayerName = Api.ClientState.LocalPlayer.Name.TextValue;
+        
+        if (Configuration.SetWindowTitle)
+            MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle , PlayerName + "@" + Api.ClientState.LocalPlayer.HomeWorld.GameData?.Name.RawString);
     }
 
     private void OnLogout()
@@ -142,6 +146,9 @@ public class ToyBox : IDalamudPlugin
             Api.ClientState.LocalPlayer.Name.TextValue,
             Api.ClientState.LocalPlayer.HomeWorld.Id.ToString()
         ]);
+        
+        MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle, "FINAL FANTASY XIV");
+
     }
 
     private void DrawUI()

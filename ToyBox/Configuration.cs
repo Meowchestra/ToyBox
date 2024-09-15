@@ -18,6 +18,8 @@ public class Configuration : IPluginConfiguration
 
     public bool AllowMultiBox { get; set; }
 
+    public bool SetWindowTitle { get; set; }
+
     public bool MainWindowVisible { get; set; } = true;
 
     // the below exist just to make saving less cumbersome

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
@@ -122,6 +123,18 @@ public class MainWindow : Window, IDisposable
                 plugin.Configuration.Save();
             }
             ImGui.SameLine();
+            
+            var setWindowTitle = plugin.Configuration.SetWindowTitle;
+            if (ImGui.Checkbox("Set Window Title", ref setWindowTitle))
+            {
+                if (setWindowTitle)
+                    MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle, Api.ClientState?.LocalPlayer?.Name.TextValue + "@" + Api.ClientState?.LocalPlayer?.HomeWorld.GameData?.Name.RawString);
+                else
+                    MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle, "FINAL FANTASY XIV");
+                plugin.Configuration.SetWindowTitle = setWindowTitle;
+                plugin.Configuration.Save();
+            }
+
             if (ImGui.Button("Import BtBFormation"))
             {
                 plugin.ToggleDrawBtBUI();
