@@ -46,8 +46,9 @@ public class BackgroundRunner : IDisposable
     private unsafe void PerformanceShowHideMainUi()
     {
         if (AgentModule.Instance()->GetAgentByInternalId(AgentId.PerformanceMode)->IsAgentActive())
-            plugin.SuspendMainUi = true;
-        else
-            plugin.SuspendMainUi = false;
+        {
+            if (plugin != null) plugin.SuspendMainUi = true;
+        }
+        else if (plugin != null) plugin.SuspendMainUi = false;
     }
 }

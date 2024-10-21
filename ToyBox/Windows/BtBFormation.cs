@@ -65,7 +65,7 @@ public class BtBFormation : Window, IDisposable
         {
             if (loadedFilePath != "" && current_item != "")
             {
-                if (configuration.FormationsList.Exists(n => n.Name.Equals(current_item)))
+                if (configuration.FormationsList.Exists(n => n?.Name != null && n.Name.Equals(current_item)))
                 {
                     error_msg = "Formation already exists.";
                     ImGui.OpenPopup("ErrorPopUp");

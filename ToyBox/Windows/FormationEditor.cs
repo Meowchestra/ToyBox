@@ -38,10 +38,10 @@ public class FormationEditor : Window, IDisposable
             foreach (var formations in configuration.FormationsList)
             {
                 var isSelected = false;
-                if (ImGui.Selectable(formations.Name, isSelected))
+                if (ImGui.Selectable(formations?.Name, isSelected))
                 {
-                    selected_formation = formations.Name;
-                    var tformation = configuration.FormationsList.FirstOrDefault(n => n.Name.Equals(selected_formation));
+                    selected_formation = formations?.Name;
+                    var tformation = configuration.FormationsList.FirstOrDefault(n => n?.Name != null && n.Name.Equals(selected_formation));
                     if (tformation != null)
                         formation = JsonConvert.DeserializeObject<FormationsData>(JsonConvert.SerializeObject(tformation)); //q&d copy formation
                 }
@@ -74,7 +74,8 @@ public class FormationEditor : Window, IDisposable
                 var idx = -1;
                 for (var i = 0; i != configuration.FormationsList.Count; i++)
                 {
-                    if (configuration.FormationsList[i].Name.Equals(selected_formation))
+                    var name = configuration.FormationsList[i]?.Name;
+                    if (name != null && name.Equals(selected_formation))
                     {
                         idx = i;
                         break;
@@ -94,7 +95,7 @@ public class FormationEditor : Window, IDisposable
         if (ImGui.Button("Delete"))
         {
             if (formation != null)
-                configuration.FormationsList.RemoveAll(n => n.Name.Equals(formation.Name));
+                configuration.FormationsList.RemoveAll(n => n?.Name != null && n.Name.Equals(formation.Name));
         }
 
         if (formation != null)

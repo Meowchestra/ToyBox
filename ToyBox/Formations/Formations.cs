@@ -78,15 +78,18 @@ public static class FormationFactory
         if (Api.ClientState?.LocalPlayer == null)
             return;
 
-        foreach (var entry in formation.formationEntry.Values)
+        if (formation?.formationEntry.Values != null)
         {
-            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.FormationData, [
-                entry.CID.ToString(),
-                FormationCalculation.RelativeToAbsolute(entry, Api.ClientState.LocalPlayer).Key
-                    .ToString("G", CultureInfo.InvariantCulture),
-                (FormationCalculation.RelativeToAbsolute(entry, Api.ClientState.LocalPlayer).Value + 3.1415927f)
-                .ToString("G", CultureInfo.InvariantCulture)
-            ]);
+            foreach (var entry in formation.formationEntry.Values)
+            {
+                Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.FormationData, [
+                    entry.CID.ToString(),
+                    FormationCalculation.RelativeToAbsolute(entry, Api.ClientState.LocalPlayer).Key
+                        .ToString("G", CultureInfo.InvariantCulture),
+                    (FormationCalculation.RelativeToAbsolute(entry, Api.ClientState.LocalPlayer).Value + 3.1415927f)
+                    .ToString("G", CultureInfo.InvariantCulture)
+                ]);
+            }
         }
     }
 
@@ -97,39 +100,45 @@ public static class FormationFactory
             Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.FormationStop, []);
     }
 
-    public static List<string> ReadBtBFormationNames(string filename)
+    public static List<string> ReadBtBFormationNames(string? filename)
     {
         List<string> outdata = [];
-        dynamic jData = JsonConvert.DeserializeObject(File.ReadAllText(filename));
-        var f = jData?["SavedFormationList"];
-        if (f != null)
+        if (filename != null)
         {
-            foreach (var name in f)
-                outdata.Add(Convert.ToString(name["11"]));
+            dynamic jData = JsonConvert.DeserializeObject(File.ReadAllText(filename)) ?? throw new InvalidOperationException();
+            var f = jData?["SavedFormationList"];
+            if (f != null)
+            {
+                foreach (var name in f)
+                    outdata.Add(Convert.ToString(name["11"]));
+            }
         }
 
         return outdata;
     }
 
-    public static FormationsData? ConvertBtBFormation(string filename, string item)
+    public static FormationsData? ConvertBtBFormation(string? filename, string item)
     {
-        var data = File.ReadAllText(filename);
-        dynamic jData = JsonConvert.DeserializeObject(data);
-        var f = jData?["SavedFormationList"];
-        if (f != null)
+        if (filename != null)
         {
-            foreach (var name in f)
+            var data = File.ReadAllText(filename);
+            dynamic jData = JsonConvert.DeserializeObject(data) ?? throw new InvalidOperationException();
+            var f = jData?["SavedFormationList"];
+            if (f != null)
             {
-                if (Convert.ToString(name["11"]) == item)
+                foreach (var name in f)
                 {
-                    var da = JsonConvert.SerializeObject((object?)name);
-                    da = da.Replace("\"11\":", "\"Name\":");
-                    da = da.Replace("\"22\":", "\"FormationEntry\":");
-                    da = da.Replace("\"i\":", "\"Index\":");
-                    da = da.Replace("\"Pepsi1\":", "\"CID\":");
-                    da = da.Replace("\"Pepsi2\":", "\"RelativePosition\":");
-                    da = da.Replace("\"Pepsi3\":", "\"RelativeRotation\":");
-                    return JsonConvert.DeserializeObject<FormationsData>(da);
+                    if (Convert.ToString(name["11"]) == item)
+                    {
+                        var da = JsonConvert.SerializeObject((object?)name);
+                        da = da.Replace("\"11\":", "\"Name\":");
+                        da = da.Replace("\"22\":", "\"FormationEntry\":");
+                        da = da.Replace("\"i\":", "\"Index\":");
+                        da = da.Replace("\"Pepsi1\":", "\"CID\":");
+                        da = da.Replace("\"Pepsi2\":", "\"RelativePosition\":");
+                        da = da.Replace("\"Pepsi3\":", "\"RelativeRotation\":");
+                        return JsonConvert.DeserializeObject<FormationsData>(da);
+                    }
                 }
             }
         }
@@ -137,18 +146,21 @@ public static class FormationFactory
         return null;
     }
 
-    public static void CheckMissingCIDs(string filename, string item, Configuration config)
+    public static void CheckMissingCIDs(string? filename, string item, Configuration config)
     {
-        dynamic jData = JsonConvert.DeserializeObject(File.ReadAllText(filename));
-        string txt = JsonConvert.SerializeObject(jData?["CidToNameWorld"]);
-        txt = txt.Replace("\"Item1\":", "\"Key\":");
-        txt = txt.Replace("\"Item2\":", "\"Value\":");
-        var output = JsonConvert.DeserializeObject<Dictionary<long, KeyValuePair<string, string>>>(txt);
-
-        if (output != null)
+        if (filename != null)
         {
-            foreach (var cid in output)
-                config.ContentIDLookup.TryAdd(cid.Key, cid.Value);
+            dynamic jData = JsonConvert.DeserializeObject(File.ReadAllText(filename)) ?? throw new InvalidOperationException();
+            string txt = JsonConvert.SerializeObject(jData?["CidToNameWorld"]);
+            txt = txt.Replace("\"Item1\":", "\"Key\":");
+            txt = txt.Replace("\"Item2\":", "\"Value\":");
+            var output = JsonConvert.DeserializeObject<Dictionary<long, KeyValuePair<string, string>>>(txt);
+
+            if (output != null)
+            {
+                foreach (var cid in output)
+                    config.ContentIDLookup.TryAdd(cid.Key, cid.Value);
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ public static partial class Multiboxing
                 var name = ObjectNameOrTypeName(handle, false);
                 if (name.Contains("6AA83AB5-BAC4-4a36-9F66-A309770760CB_ffxiv_game0", StringComparison.Ordinal))
                 {
-                    Api.PluginLog.Info($"[Multibox] Closing handle {handle:X} '{name}'");
+                    Api.PluginLog?.Info($"[Multibox] Closing handle {handle:X} '{name}'");
                     CloseHandle(handle);
                 }
             }

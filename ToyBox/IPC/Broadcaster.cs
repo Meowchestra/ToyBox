@@ -109,7 +109,7 @@ public static class Broadcaster
                     IPCProvider.PartyInviteAcceptAction();
                     break;
                 case MessageType.PartyPromote:
-                    if (!GroupManager.Instance()->GetGroup()->IsEntityIdPartyLeader(localPlayer.LocalPlayer.EntityId))
+                    if (localPlayer.LocalPlayer != null && !GroupManager.Instance()->GetGroup()->IsEntityIdPartyLeader(localPlayer.LocalPlayer.EntityId))
                         break;
                     IPCProvider.PartySetLeadAction(msg.message[0]);
                     break;

@@ -26,19 +26,20 @@ public static class LocalPlayerCollector
         if (t is null)
         {
             localPlayers.Add(new LocalPlayer { LocalContentId = localContentId, Name = name, HomeWorld = HomeWorld });
-            Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCAdd, [
-                Api.ClientState.LocalPlayer.Name.TextValue,
-                Api.ClientState.LocalPlayer.HomeWorld.Id.ToString(),
-                "0"
-            ]);
+            if (Api.ClientState?.LocalPlayer?.Name.TextValue != null)
+            {
+                Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCAdd, [
+                    Api.ClientState.LocalPlayer.Name.TextValue,
+                    Api.ClientState.LocalPlayer.HomeWorld.Id.ToString(),
+                    "0"
+                ]);
+            }
         }
     }
 
     public static void BroadCastEnabled(bool enabled)
     {
-        var t = localPlayers.Where(n => n.LocalContentId == Api.ClientState.LocalContentId);
-        if (t is null)
-            return;
+        var t = localPlayers.Where(n => Api.ClientState != null && n.LocalContentId == Api.ClientState.LocalContentId);
         t.First().BroadCastEnabled = enabled;
     }
 
