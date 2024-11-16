@@ -18,6 +18,11 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Setup .NET SDK 9
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9'
+
     - name: Get version
       uses: kzrnm/get-net-sdk-project-versions-action@v2
       id: get-version
@@ -37,7 +42,7 @@ jobs:
         Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
 
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet build -c Release
 
     - name: Update repository
       shell: bash

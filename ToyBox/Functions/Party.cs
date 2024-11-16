@@ -23,7 +23,7 @@ public static class Party
 
         Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.PartyPromote, [
             Api.ClientState.LocalPlayer.Name.TextValue,
-            Api.ClientState.LocalPlayer.HomeWorld.Id.ToString()
+            Api.ClientState.LocalPlayer.HomeWorld.ValueNullable?.RowId.ToString()
         ]);
     }
 
@@ -58,7 +58,7 @@ public static class Party
             true.ToString(),
             Api.ClientState.LocalPlayer.GameObjectId.ToString(),
             Api.ClientState.LocalPlayer.Name.TextValue,
-            Api.ClientState.LocalPlayer.HomeWorld.Id.ToString()
+            Api.ClientState.LocalPlayer.HomeWorld.ValueNullable?.RowId.ToString(),
         ]);
     }
 

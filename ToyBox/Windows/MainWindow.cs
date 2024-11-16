@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
+using Dalamud.Utility;
 using ImGuiNET;
 using OtterGui.Text;
 using OtterGuiInternal.Structs;
@@ -128,7 +129,7 @@ public class MainWindow : Window, IDisposable
             if (ImGui.Checkbox("Set Window Title", ref setWindowTitle))
             {
                 if (setWindowTitle)
-                    MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle, Api.ClientState?.LocalPlayer?.Name.TextValue + "@" + Api.ClientState?.LocalPlayer?.HomeWorld.GameData?.Name.RawString);
+                    MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle, Api.ClientState?.LocalPlayer?.Name.TextValue + "@" + Api.ClientState?.LocalPlayer?.HomeWorld.ValueNullable?.Name.ToDalamudString().TextValue);
                 else
                     MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle, "FINAL FANTASY XIV");
                 plugin.Configuration.SetWindowTitle = setWindowTitle;

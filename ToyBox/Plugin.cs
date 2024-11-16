@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using Dalamud.Utility;
 using ToyBox.Functions;
 using ToyBox.IPC;
 using ToyBox.Misc;
@@ -95,7 +96,7 @@ public class ToyBox : IDalamudPlugin
             Api.ClientState.Logout -= OnLogout;
         }
 
-        OnLogout();
+        OnLogout(0,0);
 
         Broadcaster.Dispose();
         IPCProvider.Dispose();
@@ -120,7 +121,7 @@ public class ToyBox : IDalamudPlugin
 
         Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCAdd, [
             Api.ClientState.LocalPlayer.Name.TextValue,
-            Api.ClientState.LocalPlayer.HomeWorld.Id.ToString(),
+            Api.ClientState.LocalPlayer.HomeWorld.ValueNullable?.RowId.ToString(),
             "0"
         ]);
 
@@ -128,10 +129,10 @@ public class ToyBox : IDalamudPlugin
         PlayerName = Api.ClientState.LocalPlayer.Name.TextValue;
         
         if (Configuration.SetWindowTitle)
-            MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle , PlayerName + "@" + Api.ClientState.LocalPlayer.HomeWorld.GameData?.Name.RawString);
+            MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle , PlayerName + "@" + Api.ClientState.LocalPlayer.HomeWorld.ValueNullable?.Name.ToDalamudString().TextValue);
     }
 
-    private void OnLogout()
+    private void OnLogout(int type, int code)
     {
         if (Api.ClientState?.LocalPlayer == null)
         {
@@ -144,7 +145,7 @@ public class ToyBox : IDalamudPlugin
         }
         Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCRemove, [
             Api.ClientState.LocalPlayer.Name.TextValue,
-            Api.ClientState.LocalPlayer.HomeWorld.Id.ToString()
+            Api.ClientState.LocalPlayer.HomeWorld.ValueNullable?.RowId.ToString()
         ]);
         
         MiscFunctions.SetWindowText(Process.GetCurrentProcess().MainWindowHandle, "FINAL FANTASY XIV");

@@ -31,40 +31,34 @@ public static class FormationFactory
             foreach (var f in Api.PartyList)
             {
                 //not the same world? Nope.
-                if (Api.ClientState != null && Api.ClientState.LocalPlayer != null && f.World.Id != Api.ClientState.LocalPlayer.CurrentWorld.Id)
+                if (f.World.RowId != Api.ClientState?.LocalPlayer?.CurrentWorld.ValueNullable?.RowId)
                     continue;
 
                 //get the gob
                 if (Api.Objects?.SearchById(f.ObjectId) is not IPlayerCharacter player)
                     continue;
 
-                var lPlayer = LocalPlayerCollector.localPlayers.First(n =>
-                    n.Name.Equals(player.Name.TextValue) && n.HomeWorld == player.HomeWorld.Id);
-                if (lPlayer == null)
-                    continue;
+                var lPlayer = LocalPlayerCollector.localPlayers.First(n => n.Name.Equals(player.Name.TextValue) && n.HomeWorld == player.HomeWorld.ValueNullable?.RowId);
 
                 var rot = player.Rotation;
                 var pos = player.Position;
 
-                if (Api.ClientState != null)
+                if (Api.ClientState.LocalPlayer != null)
                 {
-                    if (Api.ClientState.LocalPlayer != null)
+                    var o = FormationCalculation.AbsoluteToRelative(new KeyValuePair<Vector3, float>(pos, rot),
+                        new KeyValuePair<Vector3, float>(Api.ClientState.LocalPlayer.Position,
+                            Api.ClientState.LocalPlayer.Rotation));
+
+                    var entry = new FormationEntry
                     {
-                        var o = FormationCalculation.AbsoluteToRelative(new KeyValuePair<Vector3, float>(pos, rot),
-                            new KeyValuePair<Vector3, float>(Api.ClientState.LocalPlayer.Position,
-                                Api.ClientState.LocalPlayer.Rotation));
+                        Index            = index,
+                        CID              = (long)lPlayer.LocalContentId,
+                        RelativePosition = o.Key,
+                        RelativeRotation = o.Value
+                    };
+                    index++;
 
-                        var entry = new FormationEntry
-                        {
-                            Index            = index,
-                            CID              = (long)lPlayer.LocalContentId,
-                            RelativePosition = o.Key,
-                            RelativeRotation = o.Value
-                        };
-                        index++;
-
-                        formation.formationEntry.Add(entry.CID, entry);
-                    }
+                    formation.formationEntry.Add(entry.CID, entry);
                 }
             }
         }

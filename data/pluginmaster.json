@@ -3,7 +3,7 @@
         "Author": "GiR-Zippo, Meowchestra",
         "Name": "ToyBox",
         "InternalName": "ToyBox",
-        "AssemblyVersion": "0.0.2.13",
+        "AssemblyVersion": "0.0.2.14",
         "Description": "Companion plugin addon for Whiskers that extends controls as an alternative to BardToolbox.",
         "ApplicableVersion": "any",
         "RepoUrl": "https://github.com/Meowchestra/ToyBox",

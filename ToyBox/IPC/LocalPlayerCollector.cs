@@ -30,7 +30,7 @@ public static class LocalPlayerCollector
             {
                 Broadcaster.SendMessage(Api.ClientState.LocalContentId, MessageType.BCAdd, [
                     Api.ClientState.LocalPlayer.Name.TextValue,
-                    Api.ClientState.LocalPlayer.HomeWorld.Id.ToString(),
+                    Api.ClientState.LocalPlayer.HomeWorld.ValueNullable?.RowId.ToString(),
                     "0"
                 ]);
             }
