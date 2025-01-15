@@ -3,7 +3,7 @@
         "Author": "GiR-Zippo, Meowchestra",
         "Name": "ToyBox",
         "InternalName": "ToyBox",
-        "AssemblyVersion": "0.0.2.14",
+        "AssemblyVersion": "0.0.2.15",
         "Description": "Companion plugin addon for Whiskers that extends controls as an alternative to BardToolbox.",
         "ApplicableVersion": "any",
         "RepoUrl": "https://github.com/Meowchestra/ToyBox",
@@ -25,9 +25,9 @@
         "Punchline": "Frontend addon for Whiskers.",
         "IsHide": "false",
         "IsTestingExclusive": "false",
-        "LastUpdate": "1731742273",
-        "DownloadLinkInstall": "https://github.com/Meowchestra/ToyBox/releases/download/0.0.2.14/latest.zip",
-        "DownloadLinkTesting": "https://github.com/Meowchestra/ToyBox/releases/download/0.0.2.14/latest.zip",
-        "DownloadLinkUpdate": "https://github.com/Meowchestra/ToyBox/releases/download/0.0.2.14/latest.zip"
+        "LastUpdate": "1736974767",
+        "DownloadLinkInstall": "https://github.com/Meowchestra/ToyBox/releases/download/0.0.2.15/latest.zip",
+        "DownloadLinkTesting": "https://github.com/Meowchestra/ToyBox/releases/download/0.0.2.15/latest.zip",
+        "DownloadLinkUpdate": "https://github.com/Meowchestra/ToyBox/releases/download/0.0.2.15/latest.zip"
     }
 ]
