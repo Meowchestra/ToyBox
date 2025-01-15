@@ -16,7 +16,7 @@
     <Description>Companion plugin addon for Whiskers that extends controls as an alternative to BardToolbox.</Description>
     <PackageProjectUrl>https://github.com/Meowchestra/ToyBox</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-    <Version>0.0.2.14</Version>
+    <Version>0.0.2.15</Version>
 
     <NoWarn>CA1416</NoWarn>
   </PropertyGroup>
@@ -49,8 +49,8 @@
 
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="11.0.0" />
-    <PackageReference Include="MessagePack" Version="3.0.238-rc.1" />
-    <PackageReference Include="TinyIpc" Version="4.3.3" />
+    <PackageReference Include="MessagePack" Version="3.1.1" />
+    <PackageReference Include="TinyIpc" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>

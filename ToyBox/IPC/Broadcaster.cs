@@ -21,6 +21,7 @@ public static class Broadcaster
     //Broadcaster
     private static readonly TinyMessageBus MessagebusSend = new("DalamudBroadcaster.ToyBox");
     private static readonly TinyMessageBus MessagebusReceive = new("DalamudBroadcaster.ToyBox");
+    private static EventHandler<TinyMessageReceivedEventArgs>? _messageReceivedHandler;
 
     private static ToyBox? plugin { get; set; }
 
@@ -29,8 +30,15 @@ public static class Broadcaster
     public static void Initialize(ToyBox? pluginmain)
     {
         plugin = pluginmain;
-        //Init the messagebus
-        MessagebusReceive.MessageReceived += (sender, e) => MessageReceived((byte[])e.Message);
+
+        // Define the handler and subscribe to the event
+        _messageReceivedHandler = (sender, e) =>
+        {
+            // Convert BinaryData to byte[] and handle the message
+            var messageBytes = e.Message.ToArray();
+            MessageReceived(messageBytes);
+        };
+        MessagebusReceive.MessageReceived += _messageReceivedHandler;
     }
 
     //Messagebus Actions
@@ -148,18 +156,30 @@ public static class Broadcaster
 
     public static void SendMessage(ulong localContentId, MessageType type, List<string> msg)
     {
-        var x = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new BroadcastMessage
+        var broadcastMessage = new BroadcastMessage
         {
             LocalContentId = localContentId,
             msgType        = (ushort)type,
             message        = msg
-        }));
-        MessagebusSend.PublishAsync(x).Wait();
+        };
+
+        // Serialize to JSON and create BinaryData
+        var jsonString = JsonConvert.SerializeObject(broadcastMessage);
+        var binaryData = new BinaryData(jsonString);
+
+        // Publish using BinaryData
+        MessagebusSend.PublishAsync(binaryData).Wait();
     }
 
     public static void Dispose()
     {
-        MessagebusReceive.MessageReceived -= (sender, e) => MessageReceived((byte[])e.Message);
+        // Unsubscribe using the named delegate
+        if (_messageReceivedHandler != null)
+        {
+            MessagebusReceive.MessageReceived -= _messageReceivedHandler;
+        }
+
+        // Clean up other resources
         MessagebusReceive.Dispose();
         MessagebusSend.Dispose();
     }
