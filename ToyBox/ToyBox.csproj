@@ -1,4 +1,4 @@
-<Project Sdk="Dalamud.NET.SDK/12.0.2">
+<Project Sdk="Dalamud.NET.SDK/13.0.0">
   <PropertyGroup>
     <TargetFramework>net9.0-windows</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -16,7 +16,7 @@
     <Description>Companion plugin addon for Whiskers that extends controls as an alternative to BardToolbox.</Description>
     <PackageProjectUrl>https://github.com/Meowchestra/ToyBox</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-    <Version>0.0.2.18</Version>
+    <Version>0.0.2.19</Version>
 
     <NoWarn>CA1416</NoWarn>
   </PropertyGroup>

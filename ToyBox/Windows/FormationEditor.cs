@@ -1,8 +1,8 @@
 using System.Numerics;
+using Dalamud.Bindings.ImGui;
+using Dalamud.Bindings.ImPlot;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
-using ImPlotNET;
 using Newtonsoft.Json;
 using ToyBox.Formations;
 using ToyBox.IPC;
