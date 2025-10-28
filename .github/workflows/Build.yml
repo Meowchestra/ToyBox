@@ -70,7 +70,7 @@ jobs:
         files: ./ToyBox/bin/x64/Release/ToyBox/latest.zip
 
     - name: Commit latest build
-      uses: stefanzweifel/git-auto-commit-action@v6
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: "Update Build"
         file_pattern: "./data/*.json"
