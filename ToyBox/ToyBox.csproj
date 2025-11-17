@@ -44,7 +44,7 @@
 
   <ItemGroup>
     <PackageReference Include="MessagePack" Version="3.1.4" />
-    <PackageReference Include="TinyIpc" Version="5.1.0" />
+    <PackageReference Include="TinyIpc" Version="5.2.0" />
     <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39" />
   </ItemGroup>
 
